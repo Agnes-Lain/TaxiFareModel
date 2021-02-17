@@ -1,11 +1,14 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
-AWS_BUCKET_PATH = "s3://wagon-public-datasets/taxi-fare-train.csv"
+
+BUCKET_TRAIN_DATA_PATH = 'data/train_1k.csv'
+BUCKET_FOLDER = 'wagon-bootcamp-test'
 
 
-def get_data(nrows=10000):
+def get_data(nrows=1000):
     '''returns a DataFrame with nrows from s3 bucket'''
-    df = pd.read_csv(AWS_BUCKET_PATH, nrows=nrows)
+    df = pd.read_csv(BUCKET_TRAIN_DATA_PATH, nrows=nrows)
     return df
 
 
@@ -23,6 +26,11 @@ def clean_data(df, test=False):
     df = df[df["dropoff_longitude"].between(left=-74, right=-72.9)]
     return df
 
+def set_data(df):
+    X = df.drop(columns='fare_amount')
+    y = df['fare_amount']
+
+    return train_test_split(X, y, test_size=0.2)
 
 if __name__ == '__main__':
     df = get_data()
